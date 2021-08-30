@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+    gitlab:
+        image: 'gitlab/gitlab-ce:14.1.3-ce.0'
+        restart: always
+        hostname: '192.168.1.56'
+        container_name: gitlab
+        privileged: true
+        environment:
+            GITLAB_HOME: "/home/system/gitlab"
+            GITLAB_OMNIBUS_CONFIG: |
+                external_url="http://192.168.1.56:8081"
+                gitlab_rails['display_initial_root_password'] = true
+                gitlab_rails['store_initial_root_password'] = true
+                gitlab_rails['gitlab_shell_ssh_port'] = 2224
+                gitlab_rails['smtp_enable'] = false
+                gitlab_rails['initial_shared_runners_registration_token'] = "emzakralqkfglmk<ùdsqmlqgfkazeflqmkmmflskfmlkaqmlka"
+        ports:
+            - '8081:80'
+            - '443:443'
+            - '2224:2224'
+        volumes:
+            - './config:/etc/gitlab'
+            - './logs:/var/log/gitlab'
+            - './data:/var/opt/gitlab'
+            - './secret_backups:/secret/gitlab/backups'
+            - './backups:/var/opt/gitlab/backups'
+

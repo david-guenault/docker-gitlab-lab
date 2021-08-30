@@ -1,0 +1,9 @@
+!gitlab/docker-compose.yml
+gitlab/venv/
+gitlab/backups/
+gitlab/secret_backups/
+gitlab/env.sh
+gilab/config/
+gitlab/logs/
+gitlab/data/
+
