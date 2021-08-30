@@ -1,5 +1,7 @@
 # easy gitlab lab with docker on ubuntu
 
+This lab is for docker under ubuntu linux >= 20.04 !
+
 ## TL;DR
 
 ```bash
