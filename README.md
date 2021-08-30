@@ -1,5 +1,15 @@
 # easy gitlab lab with docker on ubuntu
 
+## TL;DR
+
+```bash
+git clone https://github.com/david-guenault/docker-gitlab-lab.git
+cd docker-gitlab-lab
+sudo ./prerequisites
+make prepare
+make create
+```
+
 ## Usage
 
 ### install prerequisites
