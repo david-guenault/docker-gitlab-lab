@@ -3,7 +3,7 @@
 PYTHON=/usr/bin/python3
 DOCKER=/usr/bin/docker
 BASE=$$(pwd)
-COMPOSE=$$(pwd)/venv/bin/docker-compose
+COMPOSE=$$(pwd)/venv/bin/docker-compose --env-file ./env.sh 
 CONTAINER=gitlab
 
 venv: rmvenv
@@ -18,7 +18,7 @@ create:
 	$(DOCKER) exec -t $(CONTAINER) mkdir -p /secret/gitlab/backups
 
 kill:
-	@-$(COMPOSE) kill
+	$(COMPOSE) kill
 
 rm:
 	@-$(COMPOSE) rm -f
@@ -69,7 +69,7 @@ clean: destroy rmbackup rmvenv
 
 list_backups:
 	@-echo "Backups"
-	@-$(DOCKER) exec -ti $(CONTAINER) ls -1 /var/opt/gitlab/backups | grep "gitlab_backup\.tar" | sed -e "s/_gitlab_backup\.tar//g"
+	@-ls -1 backups | grep "gitlab_backup\.tar" | sed -e "s/_gitlab_backup\.tar//g"
 	@-echo ""
 	@-echo "Secret Backups"
 	@-ls -1 secret_backups | grep -i gitlab_config
@@ -92,4 +92,4 @@ restore_backup:
 purge_backups:
 	@-./purge_backups.sh
 
-.PHONY: clean create kill logs ps reconfigure rm shell start status stop venv status clean rmvolumes rmvenv rmdata rmbackup
+.PHONY: backup destroy list_backups purge_backups rm rmvenv show_root_password stop clean gitlab_status logs reconfigure rmbackup rmvolumes start venv create kill ps restore_backup rmdata shell status 

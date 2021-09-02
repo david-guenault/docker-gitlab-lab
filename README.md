@@ -41,7 +41,7 @@ make show_root_password
 Note: this will remove the gitlab container and all data but not the backup data
 
 ```bash
-sudo make destroy
+make destroy
 ```
 
 ### destroy and clean 
@@ -84,7 +84,7 @@ run: sidekiq: (pid 911) 382s; run: log: (pid 924) 379s
 run: sshd: (pid 39) 785s; run: log: (pid 38) 785s
 
 # list your backups
-make list_backups
+sudo make list_backups
 Backups
 1630258510_2021_08_29_14.1.3
 
