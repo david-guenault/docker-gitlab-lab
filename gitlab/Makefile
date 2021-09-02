@@ -89,4 +89,7 @@ restore_backup:
 	@-$(DOCKER) exec -ti $(CONTAINER) gitlab-rake gitlab:check SANITIZE=true
 	@-$(DOCKER) exec -ti $(CONTAINER) gitlab-rake gitlab:doctor:secrets
 	
+purge_backups:
+	@-./purge_backups.sh
+
 .PHONY: clean create kill logs ps reconfigure rm shell start status stop venv status clean rmvolumes rmvenv rmdata rmbackup
