@@ -4,11 +4,11 @@ This lab is for docker under ubuntu linux >= 20.04 !
 
 ## TL;DR
 
-first you have to configure your environment variables by **copying env.sh.sample to env.sh** and modify the values in this file so it match your needs. 
 
 ```bash
 git clone https://github.com/david-guenault/docker-gitlab-lab.git
 cd docker-gitlab-lab
+#first you have to configure your environment variables by **copying env.sh.sample to env.sh** and modify the values in this file so it match your needs. 
 sudo ./prerequisites
 make prepare
 make create
@@ -25,7 +25,6 @@ sudo ./prerequisites
 
 ### prepare
 
-- Edit docker-compose file and modify the line *hostname: '192.168.1.56'* so it feet your network subnet. 
 - execute the command *make prepare* to install docker-compose in a virtual environment
 
 ### deploy gitlab
