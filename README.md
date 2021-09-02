@@ -4,6 +4,8 @@ This lab is for docker under ubuntu linux >= 20.04 !
 
 ## TL;DR
 
+first you have to configure your environment variables by **copying env.sh.sample to env.sh** and modify the values in this file so it match your needs. 
+
 ```bash
 git clone https://github.com/david-guenault/docker-gitlab-lab.git
 cd docker-gitlab-lab
@@ -93,4 +95,11 @@ gitlab_config_1630258514_2021_08_29.tar
 # a restore is always on the same gitlab version ! check before doing a restore
 sudo make restore_backup GITLAB_BACKUP=1630258510_2021_08_29_14.1.3 GITLAB_SECRET_BACKUP=gitlab_config_1630258514_2021_08_29.tar
 
+```
+### purge backups
+
+you can adjust your backup retention (in days) in env.sh with the environment variable **GITLAB_BACKUP_KEEP**
+
+``` bash
+sudo make purge_backups
 ```

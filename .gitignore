@@ -1,6 +1,7 @@
-**/**
-!gitlab/docker-compose.yml
-!gitlab/Makefile
-!gitlab/env.sh.sample
-!gitlab/prerequisites.sh
-
+gitlab/backups
+gitlab/logs
+gitlab/venv
+gitlab/data
+gitlab/secret_backups
+gitlab/config
+gitlab/env.sh
