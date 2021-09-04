@@ -15,6 +15,7 @@ services:
                 gitlab_rails['store_initial_root_password'] = true
                 gitlab_rails['gitlab_shell_ssh_port'] = ${GITLAB_SSH_PORT}
                 gitlab_rails['smtp_enable'] = false
+                gitlab_rails['initial_root_password'] = "${GITLAB_ROOT_PASSWORD}"
                 gitlab_rails['initial_shared_runners_registration_token'] = "${GITLAB_SHARED_RUNNER_TOKEN}"
         ports:
             - ${GITLAB_HTTP_PORT}:80

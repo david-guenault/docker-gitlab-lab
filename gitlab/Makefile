@@ -92,4 +92,27 @@ restore_backup:
 purge_backups:
 	@-./purge_backups.sh
 
+################################################################
+######################## GITLAB RUNNERS ########################
+################################################################
+
+clean_runners: unregister_runners remove_runners clean_runners_config
+
+install_runners: create_runners register_runners
+
+register_runners:
+	@-./register_runners.sh
+
+create_runners:
+	@-./create_runners.sh
+
+remove_runners:
+	@-./remove_runners.sh
+
+unregister_runners:
+	@-./unregister_runners.sh
+
+clean_runners_config:
+	@-sudo rm -Rf ./runners
+
 .PHONY: backup destroy list_backups purge_backups rm rmvenv show_root_password stop clean gitlab_status logs reconfigure rmbackup rmvolumes start venv create kill ps restore_backup rmdata shell status 

@@ -1,0 +1,3 @@
+centos:7;docker-centos-7;docker,centos7
+centos:8;docker-centos-8;docker,centos8
+ubuntu:latest;docker-ubuntu-latest;docker,ubuntu

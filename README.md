@@ -102,3 +102,30 @@ you can adjust your backup retention (in days) in env.sh with the environment va
 ``` bash
 sudo make purge_backups
 ```
+
+### install docker runners
+
+- first you need to configure runners by modifying the file runners.csv
+- then use the following command to register your runners
+
+Note: this will destroy and recreate all of your runners. Stop any active CI/CD jobs before. 
+
+```bash
+make install_runners
+```
+
+### clean gitlab runners
+
+Note: this destroy your runners and runner configuration
+
+```bash
+make clean-runners
+```
+
+### register runner
+
+If you removed one or more of your runners. You can add them again with
+
+```bash
+make register_runners
+```
