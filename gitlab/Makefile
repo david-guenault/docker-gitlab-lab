@@ -51,6 +51,9 @@ backup:
 	$(DOCKER) exec -ti $(CONTAINER) gitlab-backup
 	$(DOCKER) exec -ti $(CONTAINER) /bin/sh -c 'gitlab-ctl backup-etc && cd /etc/gitlab/config_backup/ && cp $$(ls -1 /etc/gitlab/config_backup/ | sort -n | tail -n 1) /secret/gitlab/backups/'
 
+status:
+	$(DOCKER) exec $(CONTAINER) bash -l -c "/opt/gitlab/bin/gitlab-ctl status"
+
 rmvolumes:
 	@-$(COMPOSE) rm -v -f
 
