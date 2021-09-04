@@ -10,7 +10,7 @@ git clone https://github.com/david-guenault/docker-gitlab-lab.git
 cd docker-gitlab-lab
 #first you have to configure your environment variables by **copying env.sh.sample to env.sh** and modify the values in this file so it match your needs. 
 sudo ./prerequisites
-make prepare
+make venv
 make create
 ```
 
