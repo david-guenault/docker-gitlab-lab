@@ -5,3 +5,8 @@ gitlab/data
 gitlab/secret_backups
 gitlab/config
 gitlab/env.sh
+gitlab/runners
+step-ca/pki
+step-ca/env.sh
+step-ca/step-ca
+step-ca/backups
