@@ -25,6 +25,7 @@ test: clean
 	make init
 	sleep 5
 	make restore-backup BACKUP=$(shell ls -1 backups)
+
 remove_orphaned_volumes:
 	@-$(DOCKER) volume rm $$(docker volume ls -qf dangling=true)
 
@@ -52,6 +53,12 @@ get-fingerprint:
 
 tls-cert:
 	@-$(DOCKER) exec -ti $(CONTAINER) bash -l -c "cd /home/step; step ca certificate --force --provisioner=admin --provisioner-password-file=./credential $(FQDN) $(FQDN).crt $(FQDN).key"
+	make sync
+	cd step-ca/home/step && \
+	cat $(FQDN).crt > $(FQDN).chain.crt && \
+	cat certs/root_ca.crt >> $(FQDN).chain.crt && \
+	cat $(FQDN).chain.crt > $(FQDN).crt && \
+	cat $(FQDN).crt
 
 sync:
 	@-$(DOCKER) cp $(CONTAINER):/home ./step-ca/
