@@ -4,7 +4,7 @@ DOCKER=/usr/bin/docker
 BASE:=$(shell cat env.sh | grep HOME | awk -F= '{print $$2}')
 COMPOSE:=$(shell realpath $(BASE)/../gitlab/venv/bin/docker-compose) --env-file ./env.sh
 CONTAINER:=$(shell cat env.sh | grep CONTAINER | awk -F= '{print $$2}')
-PASS=$(shell cat env.sh | grep STEPCA_INIT_PASSWORD | awk -F= '{print $$2}')
+PASS:=$(shell cat env.sh | grep STEPCA_INIT_PASSWORD | awk -F= '{print $$2}')
 
 init:
 	$(COMPOSE) up -d
