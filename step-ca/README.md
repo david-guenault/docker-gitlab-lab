@@ -14,7 +14,7 @@ cd docker-gitlab-lab/step-ca
 make init
 make tls-cert FQDN=your.domain.name
 make sync
-# your certs will be in $STEPCA_HOME/step-ca/home/step/
+# your certs are in $STEPCA_HOME/step-ca/home/step/
 ```
 
 ## Usage
@@ -40,81 +40,35 @@ Note: this will destroy everything and let your environment in the same state as
 sudo make clean
 ```
 
+### create a TLS certificate
+
+```bash
+make tls-cert FQDN=your.domain.tld
+make sync
+# your certs are in step-ca/home/step
+```
+
 ### backup and restore your data
 
 ``` bash 
 # make a backup
 make backup 
 
-# destroy and recreate your existing gitlab
-sudo make destroy 
-make create
+# destroy and recreate your step-ca pki
+make destroy 
+make init
 
-# WAIT UNTIL GITLAB IS AVAILABLE !!!!
-# you can check by going into the container and issue the status command
-make shell
-gitlab-ctl status
-
-run: alertmanager: (pid 1673) 90s; run: log: (pid 1101) 323s
-run: gitaly: (pid 1657) 93s; run: log: (pid 541) 720s
-run: gitlab-exporter: (pid 1626) 96s; run: log: (pid 1024) 352s
-run: gitlab-workhorse: (pid 1607) 97s; run: log: (pid 959) 370s
-run: grafana: (pid 1691) 89s; run: log: (pid 1403) 200s
-run: logrotate: (pid 473) 739s; run: log: (pid 484) 736s
-run: nginx: (pid 991) 367s; run: log: (pid 1009) 363s
-run: postgres-exporter: (pid 1683) 89s; run: log: (pid 1123) 314s
-run: postgresql: (pid 655) 710s; run: log: (pid 666) 709s
-run: prometheus: (pid 1638) 95s; run: log: (pid 1070) 334s
-run: puma: (pid 895) 389s; run: log: (pid 905) 386s
-run: redis: (pid 490) 734s; run: log: (pid 499) 731s
-run: redis-exporter: (pid 1628) 97s; run: log: (pid 1047) 343s
-run: sidekiq: (pid 911) 382s; run: log: (pid 924) 379s
-run: sshd: (pid 39) 785s; run: log: (pid 38) 785s
+# WAIT UNTIL step-ca IS AVAILABLE !!!!
 
 # list your backups
-sudo make list_backups
-Backups
-1630258510_2021_08_29_14.1.3
-
-Secret Backups
-gitlab_config_1630258514_2021_08_29.tar
-
-# chose your backup and backup secret and perform a restore (it is a long process)
-# a restore is always on the same gitlab version ! check before doing a restore
-sudo make restore_backup GITLAB_BACKUP=1630258510_2021_08_29_14.1.3 GITLAB_SECRET_BACKUP=gitlab_config_1630258514_2021_08_29.tar
-
+sudo make list-backups
+step-ca.1630836664.tar.gz
+step-ca.1630836680.tar.gz
+step-ca.1630836682.tar.gz
+# chose your backup and perform a restore 
+make restore-backup BACKUP=step-ca.1630836680.tar.gz
 ```
+
 ### purge backups
 
-you can adjust your backup retention (in days) in env.sh with the environment variable **GITLAB_BACKUP_KEEP**
-
-``` bash
-sudo make purge_backups
-```
-
-### install docker runners
-
-- first you need to configure runners by modifying the file runners.csv
-- then use the following command to register your runners
-
-Note: this will destroy and recreate all of your runners. Stop any active CI/CD jobs before. 
-
-```bash
-make install_runners
-```
-
-### clean gitlab runners
-
-Note: this destroy your runners and runner configuration
-
-```bash
-make clean-runners
-```
-
-### register runner
-
-If you removed one or more of your runners. You can add them again with
-
-```bash
-make register_runners
-```
+TBD
