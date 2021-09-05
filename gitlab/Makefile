@@ -2,14 +2,21 @@
 
 PYTHON=/usr/bin/python3
 DOCKER=/usr/bin/docker
-BASE=$$(pwd)
-COMPOSE=$$(pwd)/venv/bin/docker-compose --env-file ./env.sh 
-CONTAINER=gitlab
+BASE:=$(shell cat env.sh | grep GITLAB_HOME= | awk -F= '{print $$2}')
+COMPOSE:=$(shell realpath $(BASE)/venv/bin/docker-compose) --env-file ./env.sh 
+CONTAINER:=$(shell cat env.sh | grep CONTAINER | awk -F= '{print $$2}')
 
 venv: rmvenv
 	$(PYTHON) -m venv venv
 	./venv/bin/pip install --upgrade pip wheel
 	./venv/bin/pip install docker-compose	
+
+variables:
+	@-echo $(PYTHON)
+	@-echo $(DOCKER)
+	@-echo $(BASE)
+	@-echo $(COMPOSE)
+	@-echo $(CONTAINER)
 
 create:
 	export GITLAB_HOME=$(BASE) && \
