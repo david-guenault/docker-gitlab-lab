@@ -3,7 +3,7 @@
 PYTHON=/usr/bin/python3
 DOCKER=/usr/bin/docker
 BASE:=$(shell cat env.sh | grep GITLAB_HOME= | awk -F= '{print $$2}')
-COMPOSE:=$(shell realpath $(BASE)/venv/bin/docker-compose) --env-file ./env.sh 
+COMPOSE:=$(shell realpath $$(BASE)/venv/bin/docker-compose) --env-file ./env.sh 
 CONTAINER:=$(shell cat env.sh | grep CONTAINER | awk -F= '{print $$2}')
 
 venv: rmvenv
