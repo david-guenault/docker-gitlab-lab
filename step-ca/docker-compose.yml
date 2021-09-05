@@ -1,0 +1,17 @@
+version: "3"
+
+services:
+    step-ca:
+        image: 'smallstep/step-ca:${STEPCA_VERSION}'
+        container_name: ${STEPCA_CONTAINER_NAME}
+        privileged: false
+        environment:
+            DOCKER_STEPCA_INIT_NAME: ${STEPCA_INIT_NAME}
+            DOCKER_STEPCA_INIT_DNS_NAMES: ${STEPCA_INIT_DNS_NAMES}
+            DOCKER_STEPCA_INIT_PROVISIONER_NAME: ${STEPCA_INIT_PROVISIONER_NAME}
+            DOCKER_STEPCA_INIT_SSH: "yes"
+            DOCKER_STEPCA_INIT_PASSWORD: ${STEPCA_INIT_PASSWORD}
+        dns:
+            - ${STEPCA_DNS}
+        ports:
+            - ${STEPCA_PORT}:9000
