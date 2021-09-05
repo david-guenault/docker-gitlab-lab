@@ -67,6 +67,7 @@ step-ca.1630836680.tar.gz
 step-ca.1630836682.tar.gz
 # chose your backup and perform a restore 
 make restore-backup BACKUP=step-ca.1630836680.tar.gz
+make sync
 ```
 
 ### purge backups
