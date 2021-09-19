@@ -10,3 +10,5 @@ step-ca/pki
 step-ca/env.sh
 step-ca/step-ca
 step-ca/backups
+makeenv
+step-ca/venv

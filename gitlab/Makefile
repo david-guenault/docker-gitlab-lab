@@ -3,8 +3,9 @@
 PYTHON=/usr/bin/python3
 DOCKER=/usr/bin/docker
 BASE:=$(shell cat env.sh | grep GITLAB_HOME= | awk -F= '{print $$2}')
-COMPOSE:=$(shell realpath $$(BASE)/venv/bin/docker-compose) --env-file ./env.sh 
+COMPOSE:=$(shell realpath $(BASE)/venv/bin/docker-compose) --env-file ./env.sh 
 CONTAINER:=$(shell cat env.sh | grep CONTAINER | awk -F= '{print $$2}')
+GENV=$(shell env.sh)
 
 venv: rmvenv
 	$(PYTHON) -m venv venv
@@ -24,26 +25,43 @@ create:
 	mkdir -p secret_backups && \
 	$(DOCKER) exec -t $(CONTAINER) mkdir -p /secret/gitlab/backups
 
-kill:
-	$(COMPOSE) kill
+# create_tls:
+# 	COMPOSE:=$(shell realpath $$(BASE)/venv/bin/docker-compose) --env-file ./env.ssl.sh 
+# 	export GITLAB_HOME=$(BASE) && \
+# 	$(COMPOSE) up -d && \
+# 	mkdir -p secret_backups && \
+# 	$(DOCKER) exec -t $(CONTAINER) mkdir -p /secret/gitlab/backups
 
-rm:
-	@-$(COMPOSE) rm -f
-
-logs:
-	@-$(COMPOSE) logs -f
-
-stop:
-	@-$(COMPOSE) stop
-
-ps:
-	@-$(COMPOSE) ps
+################################################################
+########################    CONTROL    #########################
+################################################################	
 
 start:
 	@-$(COMPOSE) start
 
-gitlab_status:
-	$(COMPOSE) exec -ti $(CONTAINER) "sudo gitlab-ctl --help"
+stop:
+	@-$(COMPOSE) stop
+
+kill:
+	$(COMPOSE) kill
+
+ps:
+	@-$(COMPOSE) ps
+
+logs:
+	@-$(COMPOSE) logs -f
+
+status:
+	$(DOCKER) exec $(CONTAINER) bash -l -c "/opt/gitlab/bin/gitlab-ctl status"
+
+################################################################
+########################   UTILITIES   #########################
+################################################################
+
+display_uri:
+	IGNORE := $(shell bash -c "source env.sh; env | sed 's/=/:=/' | sed 's/^/export /' > makeenv")
+	include makeenv 
+	echo $(GITLAB_URI)
 
 reconfigure:
 	$(DOCKER) exec -ti $(CONTAINER) gitlab-ctl reconfigure
@@ -54,28 +72,38 @@ shell:
 show_root_password:
 	$(DOCKER) exec -ti $(CONTAINER) cat /etc/gitlab/initial_root_password | grep "Password:"
 
-backup:
-	$(DOCKER) exec -ti $(CONTAINER) gitlab-backup
-	$(DOCKER) exec -ti $(CONTAINER) /bin/sh -c 'gitlab-ctl backup-etc && cd /etc/gitlab/config_backup/ && cp $$(ls -1 /etc/gitlab/config_backup/ | sort -n | tail -n 1) /secret/gitlab/backups/'
 
-status:
-	$(DOCKER) exec $(CONTAINER) bash -l -c "/opt/gitlab/bin/gitlab-ctl status"
+
+################################################################
+######################## GITLAB REMOVE #########################
+################################################################
+
+rm:
+	@-$(COMPOSE) rm -f
+
+remove_orphaned_volumes:
+	@-$(DOCKER) volume rm $$(docker volume ls -qf dangling=true)
 
 rmvolumes:
 	@-$(COMPOSE) rm -v -f
 
 rmdata:
-	rm -Rf config data logs
+	sudo rm -Rf config data logs
 
 rmvenv:
-	rm -Rf venv
-
-rmbackup:
-	rm -Rf backups secret_backups
+	sudo rm -Rf venv
 
 destroy: kill rmdata rmvolumes
 
 clean: destroy rmbackup rmvenv
+
+################################################################
+######################## GITLAB BACKUPS ########################
+################################################################
+
+backup:
+	$(DOCKER) exec -ti $(CONTAINER) gitlab-backup
+	$(DOCKER) exec -ti $(CONTAINER) /bin/sh -c 'gitlab-ctl backup-etc && cd /etc/gitlab/config_backup/ && cp $$(ls -1 /etc/gitlab/config_backup/ | sort -n | tail -n 1) /secret/gitlab/backups/'
 
 list_backups:
 	@-echo "Backups"
@@ -101,6 +129,9 @@ restore_backup:
 	
 purge_backups:
 	@-./purge_backups.sh
+
+rmbackup:
+	rm -Rf backups secret_backups
 
 ################################################################
 ######################## GITLAB RUNNERS ########################

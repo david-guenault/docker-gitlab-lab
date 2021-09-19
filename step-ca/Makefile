@@ -5,6 +5,7 @@ BASE:=$(shell cat env.sh | grep HOME | awk -F= '{print $$2}')
 COMPOSE:=$(shell realpath $(BASE)/../gitlab/venv/bin/docker-compose) --env-file ./env.sh
 CONTAINER:=$(shell cat env.sh | grep CONTAINER | awk -F= '{print $$2}')
 PASS:=$(shell cat env.sh | grep STEPCA_INIT_PASSWORD | awk -F= '{print $$2}')
+PROVISIONNER_NAME:=$(shell cat env.sh | grep STEPCA_INIT_PROVISIONER_NAME | awk -F= '{print $$2}')
 
 init:
 	$(COMPOSE) up -d
@@ -52,13 +53,15 @@ get-fingerprint:
 	@-$(DOCKER) exec -ti $(CONTAINER) step certificate fingerprint /home/step/certs/root_ca.crt
 
 tls-cert:
-	@-$(DOCKER) exec -ti $(CONTAINER) bash -l -c "cd /home/step; step ca certificate --force --provisioner=admin --provisioner-password-file=./credential $(FQDN) $(FQDN).crt $(FQDN).key"
+	@-$(DOCKER) exec -ti $(CONTAINER) bash -l -c "cd /home/step; step ca certificate --force --provisioner=$(PROVISIONNER_NAME) --provisioner-password-file=./credential $(FQDN) $(FQDN).crt $(FQDN).key"
 	make sync
 	cd step-ca/home/step && \
-	cat $(FQDN).crt > $(FQDN).chain.crt && \
-	cat certs/root_ca.crt >> $(FQDN).chain.crt && \
-	cat $(FQDN).chain.crt > $(FQDN).crt && \
-	cat $(FQDN).crt
+	cat $(FQDN).crt && \
+	cat $(FQDN).key
+
+	# cat $(FQDN).crt > $(FQDN).chain.crt && \
+	# cat certs/root_ca.crt >> $(FQDN).chain.crt && \
+	# cat $(FQDN).chain.crt > $(FQDN).crt && \
 
 sync:
 	@-$(DOCKER) cp $(CONTAINER):/home ./step-ca/
