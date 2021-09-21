@@ -2,7 +2,7 @@
 
 DOCKER=/usr/bin/docker
 BASE:=$(shell cat env.sh | grep HOME | awk -F= '{print $$2}')
-COMPOSE:=$(shell realpath $(BASE)/../gitlab/venv/bin/docker-compose) --env-file ./env.sh
+COMPOSE:=$(shell realpath $(BASE)/venv/bin/docker-compose) --env-file ./env.sh
 CONTAINER:=$(shell cat env.sh | grep CONTAINER | awk -F= '{print $$2}')
 PASS:=$(shell cat env.sh | grep STEPCA_INIT_PASSWORD | awk -F= '{print $$2}')
 PROVISIONNER_NAME:=$(shell cat env.sh | grep STEPCA_INIT_PROVISIONER_NAME | awk -F= '{print $$2}')
@@ -13,12 +13,20 @@ init:
 	sleep 5
 	$(DOCKER) exec -ti $(CONTAINER) bash -l -c "echo $(PASS) > /home/step/credential"
 
-test: clean
+venv:
+	python3 -m venv venv
+	./venv/bin/pip3 install --upgrade pip wheel
+	./venv/bin/pip3 install --upgrade docker-compose
+
+variables:
 	@-echo $(DOCKER)
 	@-echo $(BASE)
 	@-echo $(COMPOSE)
 	@-echo $(CONTAINER)
-	make init
+	@-echo $(PASS)
+	@-echo $(PROVISIONNER_NAME)
+
+test: clean variables init
 	sleep 5
 	make tls-cert FQDN=my.domain.tld
 	make backup
@@ -44,7 +52,10 @@ rmbackups:
 rm:
 	@-$(COMPOSE) rm -f
 
-destroy: kill rm rmfile remove_orphaned_volumes
+rmvenv:
+	rm -Rf  venv
+
+destroy: kill rm rmfile remove_orphaned_volumes rmvenv
 
 dump-config:
 	@-$(COMPOSE) exec step-ca cat /home/step/config/ca.json > ca.json
