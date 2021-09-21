@@ -26,7 +26,7 @@ variables:
 	@-echo $(PASS)
 	@-echo $(PROVISIONNER_NAME)
 
-test: clean variables init
+test: clean venv variables init
 	sleep 5
 	make tls-cert FQDN=my.domain.tld
 	make backup
@@ -36,7 +36,8 @@ test: clean variables init
 	make restore-backup BACKUP=$(shell ls -1 backups)
 
 remove_orphaned_volumes:
-	@-$(DOCKER) volume rm $$(docker volume ls -qf dangling=true)
+	@-$(DOCKER) volume rm $$(docker volume ls -qf dangling=true) && \
+	exit 0
 
 kill:
 	$(COMPOSE) kill
