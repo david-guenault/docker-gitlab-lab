@@ -71,9 +71,12 @@ tls-cert:
 	cat $(FQDN).crt && \
 	cat $(FQDN).key
 
-	# cat $(FQDN).crt > $(FQDN).chain.crt && \
-	# cat certs/root_ca.crt >> $(FQDN).chain.crt && \
-	# cat $(FQDN).chain.crt > $(FQDN).crt && \
+tls-cert-renew:
+	@-$(DOCKER) exec -ti $(CONTAINER) bash -l -c "cd /home/step; step ca renew --force $(FQDN).crt $(FQDN).key"
+	make sync
+	cd step-ca/home/step && \
+	cat $(FQDN).crt && \
+	cat $(FQDN).key
 
 sync:
 	@-$(DOCKER) cp $(CONTAINER):/home ./step-ca/
