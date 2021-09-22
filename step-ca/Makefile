@@ -59,10 +59,17 @@ rmvenv:
 destroy: kill rm rmfile remove_orphaned_volumes rmvenv
 
 dump-config:
-	@-$(COMPOSE) exec step-ca cat /home/step/config/ca.json > ca.json
+	@-$(COMPOSE) exec step-ca cat /home/step/config/ca.json 
 
 get-fingerprint:
 	@-$(DOCKER) exec -ti $(CONTAINER) step certificate fingerprint /home/step/certs/root_ca.crt
+
+ca-chain: sync
+	cd step-ca/home/step/certs && \
+	rm -f ca_chain.crt && \
+	touch ca_chain.crt && \
+	cat root_ca.crt >> ca_chain.crt && \
+	cat intermediate_ca.crt >> ca_chain.crt
 
 tls-cert:
 	@-$(DOCKER) exec -ti $(CONTAINER) bash -l -c "cd /home/step; step ca certificate --force --provisioner=$(PROVISIONNER_NAME) --provisioner-password-file=./credential $(FQDN) $(FQDN).crt $(FQDN).key"
@@ -71,12 +78,13 @@ tls-cert:
 	cat $(FQDN).crt && \
 	cat $(FQDN).key
 
-tls-cert-renew:
+tls-cert-renew: 
 	@-$(DOCKER) exec -ti $(CONTAINER) bash -l -c "cd /home/step; step ca renew --force $(FQDN).crt $(FQDN).key"
 	make sync
 	cd step-ca/home/step && \
 	cat $(FQDN).crt && \
 	cat $(FQDN).key
+	make sync
 
 sync:
 	@-$(DOCKER) cp $(CONTAINER):/home ./step-ca/
