@@ -5,7 +5,8 @@ DOCKER=/usr/bin/docker
 BASE:=$(shell cat env.sh | grep GITLAB_HOME= | awk -F= '{print $$2}')
 COMPOSE:=$(shell realpath $(BASE)/venv/bin/docker-compose) --env-file ./env.sh 
 CONTAINER:=$(shell cat env.sh | grep CONTAINER | awk -F= '{print $$2}')
-GENV=$(shell env.sh)
+HOSTNAME:=$(shell cat env.sh | grep 'GITLAB_HOSTNAME=' | grep -v '\#' | awk -F= '{print $$2}')
+GENV:=$(shell env.sh)
 
 venv: rmvenv
 	$(PYTHON) -m venv venv
@@ -18,6 +19,7 @@ variables:
 	@-echo $(BASE)
 	@-echo $(COMPOSE)
 	@-echo $(CONTAINER)
+	@-echo $(HOSTNAME)
 
 create:
 	export GITLAB_HOME=$(BASE) && \
@@ -25,12 +27,11 @@ create:
 	mkdir -p secret_backups && \
 	$(DOCKER) exec -t $(CONTAINER) mkdir -p /secret/gitlab/backups
 
-# create_tls:
-# 	COMPOSE:=$(shell realpath $$(BASE)/venv/bin/docker-compose) --env-file ./env.ssl.sh 
-# 	export GITLAB_HOME=$(BASE) && \
-# 	$(COMPOSE) up -d && \
-# 	mkdir -p secret_backups && \
-# 	$(DOCKER) exec -t $(CONTAINER) mkdir -p /secret/gitlab/backups
+update_certificate:
+	cd ../step-ca && \
+	make tls-cert-renew FQDN=$(HOSTNAME)
+	make stop
+	make start
 
 ################################################################
 ########################    CONTROL    #########################
