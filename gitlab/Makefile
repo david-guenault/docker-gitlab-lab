@@ -6,7 +6,6 @@ BASE:=$(shell cat env.sh | grep GITLAB_HOME= | awk -F= '{print $$2}')
 COMPOSE:=$(shell realpath $(BASE)/venv/bin/docker-compose) --env-file ./env.sh 
 CONTAINER:=$(shell cat env.sh | grep CONTAINER | awk -F= '{print $$2}')
 HOSTNAME:=$(shell cat env.sh | grep 'GITLAB_HOSTNAME=' | grep -v '\#' | awk -F= '{print $$2}')
-GENV:=$(shell env.sh)
 
 venv: rmvenv
 	$(PYTHON) -m venv venv
