@@ -6,6 +6,7 @@ COMPOSE:=$(shell realpath $(BASE)/venv/bin/docker-compose) --env-file ./env.sh
 CONTAINER:=$(shell cat env.sh | grep CONTAINER | awk -F= '{print $$2}')
 PASS:=$(shell cat env.sh | grep STEPCA_INIT_PASSWORD | awk -F= '{print $$2}')
 PROVISIONNER_NAME:=$(shell cat env.sh | grep STEPCA_INIT_PROVISIONER_NAME | awk -F= '{print $$2}')
+STEP_CA_CERTIFICATE_DURATION:=$(shell cat env.sh | grep STEP_CA_CERTIFICATE_DURATION= | awk -F= '{print $$2}')
 
 init:
 	$(COMPOSE) up -d
@@ -25,6 +26,7 @@ variables:
 	@-echo $(CONTAINER)
 	@-echo $(PASS)
 	@-echo $(PROVISIONNER_NAME)
+	@-echo $(STEP_CA_CERTIFICATE_DURATION)
 
 test: clean venv variables init
 	sleep 5
@@ -72,7 +74,7 @@ ca-chain: sync
 	cat intermediate_ca.crt >> ca_chain.crt
 
 tls-cert:
-	@-$(DOCKER) exec -ti $(CONTAINER) bash -l -c "cd /home/step; step ca certificate --force --provisioner=$(PROVISIONNER_NAME) --provisioner-password-file=./credential $(FQDN) $(FQDN).crt $(FQDN).key"
+	@-$(DOCKER) exec -ti $(CONTAINER) bash -l -c "cd /home/step; step ca certificate --force --not-after=$(STEP_CA_CERTIFICATE_DURATION) --provisioner=$(PROVISIONNER_NAME) --provisioner-password-file=./credential $(FQDN) $(FQDN).crt $(FQDN).key"
 	make sync
 	cd step-ca/home/step && \
 	cat $(FQDN).crt && \
