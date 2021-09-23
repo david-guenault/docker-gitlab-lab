@@ -11,12 +11,14 @@ while read image name tags; do
     echo " - tags: $tags"
     echo " - configuration folder $basefolder/$name"
     echo "Start runner runner-$name with image $image"
+    mkdir -p $basefolder/$name/certs
+    sudo cp ${GITLAB_SSL_CA} $basefolder/$name/certs/ca.crt
     docker run -d \
         --name runner-$name \
         --restart always \
         --privileged \
-        -v $(pwd)/$basefolder/$name:/etc/gitlab-runner \
-        -v /var/run/docker.sock:/var/run/docker.sock gitlab/gitlab-runner:latest    
+        -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd)/$basefolder/$name:/etc/gitlab-runner \
+        gitlab/gitlab-runner:latest
 done < $runners_file
 IFS=$OLDIFS
 

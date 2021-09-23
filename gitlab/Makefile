@@ -28,7 +28,9 @@ create:
 
 update_certificate:
 	cd ../step-ca && \
-	make tls-cert-renew FQDN=$(HOSTNAME)
+	make tls-cert-renew FQDN=$(HOSTNAME) && \
+	make sync && \
+	make backup
 	make stop
 	make start
 
