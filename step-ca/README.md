@@ -62,6 +62,7 @@ You will need to customize the ca.json file and your env.sh file
                 "maxTLSCertDuration": "87660h"
             },
 ```
+4 - update container config with **make update-config**
 You are now able to issue certificates with a duration of more than 24 hours. 
 
 Note: **maxTLSCertDuration** must be greater than the desired duration.
