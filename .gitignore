@@ -13,3 +13,7 @@ step-ca/backups
 step-ca/venv
 makeenv
 step-ca/venv
+coredns/venv
+coredns/coredns.git
+coredns/coredns
+coredns/conf
