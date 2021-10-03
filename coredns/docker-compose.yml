@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+    coredns:
+        image: 'coredns:latest'
+        restart: always
+        hostname: 'dns.gitlab.lan'
+        container_name: coredns
+        privileged: true
+        ports:
+            - 53:53
+        volumes:
+            - './conf/Corefile:/etc/coredns/Corefile'
+            - './conf/db.box4prod.lan:/etc/coredns/zones/db.box4prod.lan'
+        command: "-conf /etc/coredns/Corefile -dns.port \"53\" "

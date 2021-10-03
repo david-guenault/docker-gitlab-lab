@@ -1,0 +1,5 @@
+Corefile
+*.yml
+Dockerfile
+Makefile
+venv
