@@ -54,9 +54,12 @@ make sync
 You will need to customize the ca.json file and your env.sh file
 
 1 - modify the **env.sh** file and set **STEP_CA_CERTIFICATE_DURATION** value to the desired duration
+
 2 - Initialize your pki with **make init**
+
 3 - Synchronize with local filesystem **make sync**
-3 - Edit the **step-ca/home/step/ca.json** file and add the following block in the **authority** section
+
+4 - Edit the **step-ca/home/step/ca.json** file and add the following block in the **authority** section
 
 ```json
             "claims": {
