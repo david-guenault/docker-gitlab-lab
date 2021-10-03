@@ -91,6 +91,13 @@ tls-cert-renew:
 sync:
 	@-$(DOCKER) cp $(CONTAINER):/home ./step-ca/
 
+update-config:
+	@-$(DOCKER) cp ./step-ca/home/step/config/ca.json $(CONTAINER):/home/step/config/ca.json
+	make stop
+	make start
+	sleep 5
+	make sync
+
 health:
 	@-$(DOCKER) exec -ti $(CONTAINER) bash -l -c "step ca health"
 
