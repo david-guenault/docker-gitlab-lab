@@ -7,6 +7,7 @@ CONTAINER:=$(shell cat env.sh | grep CONTAINER | awk -F= '{print $$2}')
 PASS:=$(shell cat env.sh | grep STEPCA_INIT_PASSWORD | awk -F= '{print $$2}')
 PROVISIONNER_NAME:=$(shell cat env.sh | grep STEPCA_INIT_PROVISIONER_NAME | awk -F= '{print $$2}')
 STEP_CA_CERTIFICATE_DURATION:=$(shell cat env.sh | grep STEP_CA_CERTIFICATE_DURATION= | awk -F= '{print $$2}')
+STEP_CA_MAX_CERTIFICATE_DURATION=$(shell cat env.sh | grep STEP_CA_MAX_CERTIFICATE_DURATION= | awk -F= '{print $$2}')
 
 init:
 	$(COMPOSE) up -d
@@ -90,6 +91,13 @@ tls-cert-renew:
 
 sync:
 	@-$(DOCKER) cp $(CONTAINER):/home ./step-ca/
+
+
+set-tls-cert-duration: sync
+	cat step-ca/home/step/config/ca.json | jq --arg key claims --argjson value "{}" '.authority[$$key]=$$value' | jq --arg key maxTLSCertDuration --arg value $(STEP_CA_MAX_CERTIFICATE_DURATION) '.authority.claims[$$key]=$$value' > /tmp/ca.json
+	cat /tmp/ca.json > step-ca/home/step/config/ca.json	
+	cat /tmp/ca.json | jq '.authority.claims'
+	make update-config
 
 update-config:
 	@-$(DOCKER) cp ./step-ca/home/step/config/ca.json $(CONTAINER):/home/step/config/ca.json
