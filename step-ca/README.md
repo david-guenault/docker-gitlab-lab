@@ -2,6 +2,18 @@
 
 This lab is for docker under ubuntu linux >= 20.04 !
 
+## prerequisites
+
+You will need the following packages
+
+- python3
+- Make
+- jq
+
+``` bash
+sudo apt -y install jq python3 make
+```
+
 ## TL;DR
 
 Note: you must init your gitlab project first !!!!
