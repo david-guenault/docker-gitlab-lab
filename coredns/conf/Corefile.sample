@@ -1,0 +1,12 @@
+.:53 {
+    cache 
+    log
+    errors
+    root /etc/coredns
+    file zones/db.box4prod.lan box4prod.lan {
+        transfer to *
+    }
+}
+
+
+

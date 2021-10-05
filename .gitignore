@@ -16,4 +16,3 @@ step-ca/venv
 coredns/venv
 coredns/coredns.git
 coredns/coredns
-coredns/conf

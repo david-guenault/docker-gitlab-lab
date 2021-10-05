@@ -1,0 +1,10 @@
+@	IN	SOA dns.box4prod.lan. (
+	2017042745
+	1h
+	15m
+	7d
+	10m
+)
+				IN 		NS 		dns.box4prod.lan.
+workstation     IN      A       192.168.1.99
+

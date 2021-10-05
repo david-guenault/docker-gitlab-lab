@@ -56,9 +56,12 @@ venv: rmvenv
 	./venv/bin/pip install docker-compose	
 
 variables:
-	@-echo $(PYTHON)
-	@-echo $(DOCKER)
-	@-echo $(COMPOSE)
+	@-echo PYTHON $(PYTHON)
+	@-echo DOCKER $(DOCKER)
+	@-echo COMPOSE $(COMPOSE)
+	@-echo CONTAINER $(CONTAINER)
+	@-echo IMAGENAME $(IMAGENAME)
+
 
 ################################################################
 ######################## REMOVE #########################
